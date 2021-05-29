@@ -7,4 +7,7 @@ jobs:
       - run: echo "test git"
       - name: Check out repository code
         uses: actions/checkout@v2
-      - run: git clone git://sourceware.org/git/binutils-gdb.git 
+      - run: wget https://ftp.gnu.org/gnu/binutils/binutils-2.36.1.tar.xz
+      - run: tar -xJf binutils-2.36.1.tar.xz
+      - run: cd /binutils-2.36.1
+      - run: ./configure --help
