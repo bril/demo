@@ -10,4 +10,4 @@ jobs:
       - run: wget https://ftp.gnu.org/gnu/binutils/binutils-2.36.1.tar.xz
       - run: tar -xJf binutils-2.36.1.tar.xz
       - run: cd binutils-2.36.1
-      - run: sh ./configure --help
+      - run: ls
