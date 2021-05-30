@@ -8,12 +8,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install mingw-w64
-      - name: download binutils
+      - name: build binutils
         run: |
           wget https://ftp.gnu.org/gnu/binutils/binutils-2.36.1.tar.xz
           tar -xJf binutils-2.36.1.tar.xz
           mkdir binutils-build
           cd binutils-build
-      - name: Configure binutils
-        run: |
           ../binutils-2.36.1/configure --target=arm-none-symbianelf --host=mingw32-w64-i686 --target=arm-none-symbianelf --prefix=/opt/symbian --disable-nls --enable-poison-system-directories
+          make all
