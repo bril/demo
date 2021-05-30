@@ -4,17 +4,16 @@ jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "test git"
       - name: apt update
-      - run: |
+        run: |
           apt get update
           apt install mingw-w64
       - name: download binutils
-      - run: |
+        run: |
           wget https://ftp.gnu.org/gnu/binutils/binutils-2.36.1.tar.xz
           tar -xJf binutils-2.36.1.tar.xz
           mkdir binutils-build
           cd binutils-build
       - name: Configure binutils
-      - run: |
+        run: |
           ../binutils-2.36.1/configure --target=arm-none-symbianelf --host=mingw32-w64-i686 --target=arm-none-symbianelf --prefix=/opt/symbian --disable-nls --enable-poison-system-directories
