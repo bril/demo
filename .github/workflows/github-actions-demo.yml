@@ -19,7 +19,7 @@ jobs:
           make install
           ls
       - name: Upload a Build Artifact
-      - uses: actions/upload-artifact@v2.2.3
+        uses: actions/upload-artifact@v2.2.3
         with:
           name: binutils-2.36.1
           path: /opt/symbian
