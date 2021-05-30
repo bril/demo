@@ -16,3 +16,11 @@ jobs:
           cd binutils-build
           ../binutils-2.36.1/configure --target=arm-none-symbianelf --host=i686-w64-mingw32 --target=arm-none-symbianelf --prefix=/opt/symbian --disable-nls --enable-obsolete --enable-poison-system-directories
           make all
+          make install
+          ls
+      - name: Upload a Build Artifact
+      - uses: actions/upload-artifact@v2.2.3
+        with:
+          name: binutils-2.36.1
+          path: /opt/symbian
+          retention-days: 1
