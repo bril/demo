@@ -6,8 +6,8 @@ jobs:
     steps:
       - name: apt update
         run: |
-          apt get update
-          apt install mingw-w64
+          sudo apt-get update
+          sudo apt-get install mingw-w64
       - name: download binutils
         run: |
           wget https://ftp.gnu.org/gnu/binutils/binutils-2.36.1.tar.xz
