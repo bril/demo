@@ -14,5 +14,5 @@ jobs:
           tar -xJf binutils-2.36.1.tar.xz
           mkdir binutils-build
           cd binutils-build
-          ../binutils-2.36.1/configure --target=arm-none-symbianelf --host=mingw32-w64-i686 --target=arm-none-symbianelf --prefix=/opt/symbian --disable-nls --enable-poison-system-directories
+          ../binutils-2.36.1/configure --target=arm-none-symbianelf --host=i686-w64-mingw32 --target=arm-none-symbianelf --prefix=/opt/symbian --disable-nls --enable-poison-system-directories
           make all
