@@ -14,9 +14,10 @@ jobs:
           tar -xJf binutils-2.36.1.tar.xz
           mkdir binutils-build
           cd binutils-build
-          ../binutils-2.36.1/configure --target=arm-none-symbianelf --target=arm-none-symbianelf --prefix=/opt/symbian-cross --disable-nls --enable-obsolete --enable-poison-system-directories
+          ../binutils-2.36.1/configure --target=arm-none-symbianelf --prefix=/opt/symbian-cross --disable-nls --enable-obsolete --enable-poison-system-directories
           make all
           make install
+          rm -rf binutils-build
       - name: build gcc
         run: |
           wget https://ftp.gnu.org/gnu/gcc/gcc-11.1.0/gcc-11.1.0.tar.xz
@@ -25,7 +26,17 @@ jobs:
           cd gcc-11.1.0
           ./contrib/download_prerequisites
           cd ../gcc-build
-          ../gcc-11.1.0/configure --target=arm-none-symbianelf --host=i686-w64-mingw32 --prefix=/symbian-win --enable-obsolete --with-static-standard-libraries --enable-poison-system-directories
+          echo "/opt/symbian-cross/bin" >> $GITHUB_PATH
+          ../gcc-11.1.0/configure --target=arm-none-symbianelf --prefix=/opt/symbian-cross --enable-obsolete --with-static-standard-libraries --enable-poison-system-directories --disable-libstdc++__v3
+          make all
+          make install
+          cd ..
+          rm -rf gcc-build
+      - name: build gcc win
+        run: |
+          mkdir gcc-build
+          cd gcc-build
+          ../gcc-11.1.0/configure --target=arm-none-symbianelf --host=i686-w64-mingw32 --prefix=/opt/symbian-win --enable-obsolete --with-static-standard-libraries --enable-poison-system-directories --disable-libstdc++__v3
           make all
           make install
       - name: Upload a Build Artifact
