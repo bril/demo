@@ -1,47 +1,20 @@
 name: GitHub Actions Demo
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
-    runs-on: ubuntu-latest
+  windows:
+    runs-on: windows-latest
     steps:
-      - name: apt update
+      - name: build
         run: |
-          sudo apt-get update
-          sudo apt-get install mingw-w64
-      - name: build binutils
-        run: |
-          wget https://ftp.gnu.org/gnu/binutils/binutils-2.36.1.tar.xz
-          tar -xJf binutils-2.36.1.tar.xz
-          mkdir binutils-build
-          cd binutils-build
-          ../binutils-2.36.1/configure --target=arm-none-symbianelf --prefix=/opt/symbian-cross --disable-nls --enable-obsolete --enable-poison-system-directories
-          make all
-          make install
-          rm -rf binutils-build
-      - name: build gcc
-        run: |
-          wget https://ftp.gnu.org/gnu/gcc/gcc-11.1.0/gcc-11.1.0.tar.xz
-          tar -xJf gcc-11.1.0.tar.xz
-          mkdir gcc-build
-          cd gcc-11.1.0
-          ./contrib/download_prerequisites
-          cd ../gcc-build
-          echo "/opt/symbian-cross/bin" >> $GITHUB_PATH
-          ../gcc-11.1.0/configure --target=arm-none-symbianelf --prefix=/opt/symbian-cross --enable-obsolete --with-static-standard-libraries --enable-poison-system-directories --disable-libstdc++__v3
-          make all
-          make install
-          cd ..
-          rm -rf gcc-build
-      - name: build gcc win
-        run: |
-          mkdir gcc-build
-          cd gcc-build
-          ../gcc-11.1.0/configure --target=arm-none-symbianelf --host=i686-w64-mingw32 --prefix=/opt/symbian-win --enable-obsolete --with-static-standard-libraries --enable-poison-system-directories --disable-libstdc++__v3
-          make all
-          make install
+          git clone --depth=1 https://github.com/llvm/llvm-project.git 
+          cd llvm-project
+          mkdir build
+          cd build
+          cmake -DLLVM_ENABLE_PROJECTS=clang -DLLVM_TARGETS_TO_BUILD=ARM  -DLLVM_DEFAULT_TARGET_TRIPLE=arm-none-symbianelf -G "Ninja" -A Win32 -Thost=x64 ../llvm
+          ninja clang
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.3
         with:
-          name: gcc-win
-          path: /opt/symbian-win
+          name: clang-win
+          path: /llvm-project/build
           retention-days: 1
