@@ -10,8 +10,7 @@ jobs:
           cd llvm-project
           mkdir build
           cd build
-          echo %CD%
-          cmake ../llvm ^
+          cmake ..\llvm ^
           -G "Visual Studio 16 2019" ^
           -DLLVM_ENABLE_PROJECTS=clang ^
           -DLLVM_TARGETS_TO_BUILD=ARM ^
