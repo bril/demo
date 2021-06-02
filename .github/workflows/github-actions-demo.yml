@@ -5,13 +5,13 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: build
+        shell: cmd
         run: |
           git clone --depth=1 https://github.com/llvm/llvm-project.git 
           cd llvm-project
           mkdir build
           cd build
-          dir
-          cmake .. ^
+          cmake ../llvm ^
           -G "Visual Studio 16 2019" ^
           -DLLVM_ENABLE_PROJECTS=clang ^
           -DLLVM_TARGETS_TO_BUILD=ARM ^
