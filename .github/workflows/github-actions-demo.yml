@@ -26,11 +26,11 @@ jobs:
           -A Win32 ^
           -Thost=x64
           
-          cmake --build . --config Release
+          cmake --build . --config Release --target install
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.3
         with:
           name: clang-win
-          path: /llvm-project/build/Release
+          path: ${{ github.workspace }}/llvm-project/build/Release
           retention-days: 1
