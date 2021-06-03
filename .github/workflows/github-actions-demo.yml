@@ -4,9 +4,6 @@ jobs:
   windows:
     runs-on: windows-latest
     steps:
-#      - name: ninja install
-#        run: |
-#          choco install --no-progress -y ninja
       - name: build
         shell: cmd
         run: |
