@@ -32,5 +32,5 @@ jobs:
         uses: actions/upload-artifact@v2.2.3
         with:
           name: clang-win
-          path: /llvm-project/build
+          path: /llvm-project/build/Release
           retention-days: 1
