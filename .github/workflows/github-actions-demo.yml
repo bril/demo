@@ -4,13 +4,12 @@ jobs:
   windows:
     runs-on: windows-latest
     steps:
-      - name: ninja install
-        run: |
-          choco install --no-progress -y ninja
+#      - name: ninja install
+#        run: |
+#          choco install --no-progress -y ninja
       - name: build
         shell: cmd
         run: |
-          echo ::add-path::C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin
           git clone --depth=1 https://github.com/llvm/llvm-project.git 
           cd llvm-project
           mkdir build
@@ -27,8 +26,8 @@ jobs:
           -A Win32 ^
           -Thost=x64
           
-          msbuild -m LLVM.sln /t:build /property:Configuration=Release;Platform=x86
-          
+          cmake --build . --config Release
+
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.3
         with:
