@@ -23,7 +23,7 @@ jobs:
           -A Win32 ^
           -Thost=x64
           
-          ninja
+          ninja install
           
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.3
