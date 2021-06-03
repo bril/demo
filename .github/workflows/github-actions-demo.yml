@@ -4,6 +4,9 @@ jobs:
   windows:
     runs-on: windows-latest
     steps:
+      - name: ninja install
+        run: |
+          choco install --no-progress -y ninja
       - name: build
         shell: cmd
         run: |
@@ -12,7 +15,7 @@ jobs:
           mkdir build
           cd build
           cmake ../llvm ^
-          -G "Visual Studio 16 2019" ^
+          -G Ninja ^
           -DCMAKE_BUILD_TYPE=Release ^
           -DLLVM_ENABLE_PROJECTS=clang ^
           -DLLVM_TARGETS_TO_BUILD=ARM ^
@@ -20,7 +23,7 @@ jobs:
           -A Win32 ^
           -Thost=x64
           
-          cmake --build . --target install
+          ninja
           
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.3
