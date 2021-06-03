@@ -15,15 +15,18 @@ jobs:
           mkdir build
           cd build
           cmake ../llvm ^
-          -G "Ninja" ^
+          -G "Visual Studio 16 2019" ^
           -DCMAKE_BUILD_TYPE=Release ^
           -DLLVM_ENABLE_PROJECTS=clang ^
           -DLLVM_TARGETS_TO_BUILD=ARM ^
           -DLLVM_DEFAULT_TARGET_TRIPLE=arm-none-symbianelf ^
+          -DLLVM_INCLUDE_EXAMPLES=OFF ^
+          -DLLVM_INCLUDE_TESTS=OFF ^
+          -DLLVM_INCLUDE_BENCHMARKS=OFF ^
           -A Win32 ^
           -Thost=x64
           
-          ninja install
+          msbuild -m LLVM.sln /t:build /property:Configuration=Release;Platform=x86
           
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.3
