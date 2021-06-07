@@ -96,7 +96,7 @@ jobs:
         
     - name: build gcc for win
       run: |
-        export $PATH;${{ github.workspace }}/symbian/linux/bin
+        export PATH=$PATH:${{ github.workspace }}/symbian/linux/bin
         cd ${{ github.workspace }}/src/gcc-11.1.0/
         contrib/download_prerequisites
         ${{ github.workspace }}/src/gcc-11.1.0/configure \
