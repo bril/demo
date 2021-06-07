@@ -1,33 +1,56 @@
 name: GitHub Actions Demo
 on: [push]
 jobs:
-  windows:
-    runs-on: windows-latest
+  linux:
+    runs-on: ubuntu-latest
+    env:
+      GCC_VER: "11.1.0"
+      
     steps:
-      - name: build
-        shell: cmd
-        run: |
-          git clone --depth=1 https://github.com/llvm/llvm-project.git 
-          cd llvm-project
-          mkdir build
-          cd build
-          cmake ../llvm ^
-          -G "Visual Studio 16 2019" ^
-          -DCMAKE_BUILD_TYPE=Release ^
-          -DLLVM_ENABLE_PROJECTS=clang ^
-          -DLLVM_TARGETS_TO_BUILD=ARM ^
-          -DLLVM_DEFAULT_TARGET_TRIPLE=arm-none-symbianelf ^
-          -DLLVM_INCLUDE_EXAMPLES=OFF ^
-          -DLLVM_INCLUDE_TESTS=OFF ^
-          -DLLVM_INCLUDE_BENCHMARKS=OFF ^
-          -A Win32 ^
-          -Thost=x64
-          
-          cmake --build . --config Release --target install
-
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2.2.3
-        with:
-          name: clang-win
-          path: ${{ github.workspace }}/llvm-project/build/Release
-          retention-days: 1
+    - name: Cache downloads
+      id: cache-src
+      uses: actions/cache@v2.1.6
+      with:
+        path: /src
+        key: ${{ runner.OS }}-src-${{ env.GCC_VER }}
+    - name: Download
+      if: steps.cache-src.outputs.cache-hit != 'true'
+      run: |
+        cd /src
+        wget --no-verbose https://gcc.gnu.org/pub/gcc/infrastructure/gmp-6.1.0.tar.bz2
+        wget --no-verbose https://gcc.gnu.org/pub/gcc/infrastructure/mpfr-3.1.4.tar.bz2
+        wget --no-verbose https://gcc.gnu.org/pub/gcc/infrastructure/mpc-1.0.3.tar.gz
+        wget --no-verbose https://gcc.gnu.org/pub/gcc/infrastructure/isl-0.18.tar.bz2
+        wget --no-verbose https://gcc.gnu.org/pub/gcc/releases/gcc-11.1.0/gcc-11.1.0.tar.xz
+        wget --no-verbose https://gcc.gnu.org/pub/binutils/releases/binutils-2.36.1.tar.xz
+        tar -xf gmp-6.1.0.tar.bz2
+        tar -xf mpfr-3.1.4.tar.bz2
+        tar -xf mpc-1.0.3.tar.gz
+        tar -xf isl-0.18.tar.bz2
+        tar -xf gcc-11.1.0.tar.xz
+        tar -xf binutils-2.36.1.tar.xz
+        
+    - name: Cache libs
+      id: cache-libs
+      uses: actions/cache@v2.1.6
+      with:
+        path: /libs
+        key: ${{ runner.OS }}-libs-${{ env.GCC_VER }}
+        
+    - name: build libs
+      if: steps.cache-libs.outputs.cache-hit != 'true'
+      run: |
+        cd /libs
+        mkdir build
+        cd build
+        ${{ github.workspace }}/src/gmp-6.1.0/configure --host=i686-pc-linux-gnu --build=i686-pc-linux-gnu --target=i686-pc-linux-gnu --prefix=${{ github.workspace }}/libs/host-linux/usr --disable-shared --enable-cxx --disable-nls
+        make all
+        make install
+        cd ../../libs/host-linux
+        ls
+#    - name: Upload a Build Artifact
+#      uses: actions/upload-artifact@v2.2.3
+#        with:
+#          name: clang-win
+#          path: ${{ github.workspace }}/llvm-project/build/Release
+#          retention-days: 1
