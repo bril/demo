@@ -49,27 +49,24 @@ jobs:
         ls
 #        mkdir -p libs/build
         
-#    - name: build gmp for host
-#      run: |
-#        ls
-#        cd src
-#        ls
-#        cd libs/build
-#        ../../src/gmp-6.1.0/configure --prefix=${{ github.workspace }}/libs/host-linux/usr --disable-shared --enable-cxx
-#        make all
-#        make install
-#    - name: build mpfr for host
-#      run: |
-#        cd libs/build
-#        ../..//src/mpfr-3.1.4/configure --target=arm-none-symbianelf --prefix=${{ github.workspace }}/libs/host-linux/usr --disable-shared --with-gmp=${{ github.workspace }}/libs/host-linux/usr
-#        make all
-#        make install
-#    - name: build binutils for host
-#      run: |
-#        cd libs/build
-#        ${{ github.workspace }}/src/binutils-2.36.1/configure --target=arm-none-symbianelf --prefix=/symbian/linux --enable-poison-system-directories --with-static-standard-libraries --enable-lto --enable-gold=yes --enable-ld=yes --enable-obsolete --disable-libstdcxx 
-#        make all
-#        make install
+    - name: build gmp for host
+      run: |
+        cd libs/build
+        ${{ github.workspace }}/src/gmp-6.1.0/configure --prefix=${{ github.workspace }}/libs/host-linux/usr --disable-shared --enable-cxx
+        make all
+        make install
+    - name: build mpfr for host
+      run: |
+        cd libs/build
+        ${{ github.workspace }}/src/mpfr-3.1.4/configure --target=arm-none-symbianelf --prefix=${{ github.workspace }}/libs/host-linux/usr --disable-shared --with-gmp=${{ github.workspace }}/libs/host-linux/usr
+        make all
+        make install
+    - name: build binutils for host
+      run: |
+        cd libs/build
+        ${{ github.workspace }}/src/binutils-2.36.1/configure --target=arm-none-symbianelf --prefix=/symbian/linux --enable-poison-system-directories --with-static-standard-libraries --enable-lto --enable-gold=yes --enable-ld=yes --enable-obsolete --disable-libstdcxx 
+        make all
+        make install
 #    - name: Upload a Build Artifact
 #      uses: actions/upload-artifact@v2.2.3
 #        with:
