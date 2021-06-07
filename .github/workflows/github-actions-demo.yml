@@ -96,7 +96,7 @@ jobs:
         rm -rf *
         
     - name: apt install mingw
-      run: sudo apt-get install i686-w64-mingw32
+      run: sudo apt-get install mingw-w64
       
     - name: build gcc for win
       run: |
