@@ -103,6 +103,7 @@ jobs:
         export PATH=$PATH:${{ github.workspace }}/symbian/linux/bin
         cd ${{ github.workspace }}/src/gcc-11.1.0/
         contrib/download_prerequisites
+        cd ../../build
         ${{ github.workspace }}/src/gcc-11.1.0/configure \
         --host=x86_64-pc-linux-gnu \
         --build=x86_64-pc-linux-gnu \
@@ -135,6 +136,7 @@ jobs:
         export PATH=$PATH:${{ github.workspace }}/symbian/linux/bin
         cd ${{ github.workspace }}/src/gcc-11.1.0/
         contrib/download_prerequisites
+        cd ../../build
         ${{ github.workspace }}/src/gcc-11.1.0/configure \
         --host=i686-w64-mingw32 \
         --build=x86_64-pc-linux-gnu \
