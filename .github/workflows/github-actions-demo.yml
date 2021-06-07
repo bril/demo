@@ -48,8 +48,10 @@ jobs:
         ${{ github.workspace }}/src/gmp-6.1.0/configure --prefix=${{ github.workspace }}/libs/host-linux/usr --disable-shared --enable-cxx
         make all
         make install
-        cd ../../libs/host-linux
-        ls
+        ${{ github.workspace }}/src/mpfr-3.1.4/configure --target=arm-none-symbianelf --prefix=${{ github.workspace }}/libs/host-linux/usr --disable-shared --with-gmp=${{ github.workspace }}/libs/host-linux/usr
+        make all
+        make install
+        
 #    - name: Upload a Build Artifact
 #      uses: actions/upload-artifact@v2.2.3
 #        with:
