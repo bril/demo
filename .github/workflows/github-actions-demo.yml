@@ -41,7 +41,7 @@ jobs:
 #      with:
 #        path: /libs
 #        key: ${{ runner.OS }}-libs-${{ env.GCC_VER }}
-    - name: build gmp for host
+    - name: build gmp linux
       run: |
         cd build
         ${{ github.workspace }}/src/gmp-6.1.0/configure \
@@ -57,7 +57,7 @@ jobs:
         make install
         rm -rf *
         
-    - name: build mpfr for host
+    - name: build mpfr linux
       run: |
         cd build
         ${{ github.workspace }}/src/mpfr-3.1.4/configure \
@@ -73,7 +73,7 @@ jobs:
         make install
         rm -rf *
         
-    - name: build binutils for host
+    - name: build binutils linux
       run: |
         cd build
         ${{ github.workspace }}/src/binutils-2.36.1/configure \
@@ -98,7 +98,39 @@ jobs:
     - name: apt install mingw
       run: sudo apt-get install mingw-w64
       
-    - name: build gcc for win
+    - name: build gcc linux
+      run: |
+        export PATH=$PATH:${{ github.workspace }}/symbian/linux/bin
+        cd ${{ github.workspace }}/src/gcc-11.1.0/
+        contrib/download_prerequisites
+        ${{ github.workspace }}/src/gcc-11.1.0/configure \
+        --host=x86_64-pc-linux-gnu \
+        --build=x86_64-pc-linux-gnu \
+        --target=arm-none-symbianelf \
+        --prefix=${{ github.workspace }}/symbian/linux \
+        --enable-threads \
+        --disable-libmudflap \
+        --disable-libssp \
+        --disable-libstdcxx-pch \
+        --enable-extra-sgxxlite-multilibs \
+        --with-gnu-as \
+        --with-gnu-ld \
+        --enable-languages=c,c++ \
+        --enable-shared \
+        --disable-lto \
+        --disable-nls \
+        --prefix=/symbian/win \
+        '--with-host-libstdcxx=-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' \
+        --disable-libgomp \
+        --enable-poison-system-directories \
+        --enable-obsolete \
+        --disable-libstdcxx \
+        --enable-option-checking 
+        
+        make all
+        make install
+        
+    - name: build gcc win
       run: |
         export PATH=$PATH:${{ github.workspace }}/symbian/linux/bin
         cd ${{ github.workspace }}/src/gcc-11.1.0/
