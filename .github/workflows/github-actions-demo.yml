@@ -52,19 +52,19 @@ jobs:
     - name: build gmp for host
       run: |
         cd libs/build
-        ${{ github.workspace }}/src/gmp-6.1.0/configure --prefix=${{ github.workspace }}/libs/host-linux/usr --disable-shared --disable-nls --enable-cxx
+        ${{ github.workspace }}/src/gmp-6.1.0/configure --host=x86_64-pc-linux-gnu --build=x86_64-pc-linux-gnu --target=x86_64-pc-linux-gnu --prefix=${{ github.workspace }}/libs/host-linux/usr --disable-shared --disable-nls --enable-cxx
         make all
         make install
     - name: build mpfr for host
       run: |
         cd libs/build
-        ${{ github.workspace }}/src/mpfr-3.1.4/configure --target=arm-none-symbianelf --prefix=${{ github.workspace }}/libs/host-linux/usr --disable-shared --disable-nls --with-gmp=${{ github.workspace }}/libs/host-linux/usr
+        ${{ github.workspace }}/src/mpfr-3.1.4/configure --host=x86_64-pc-linux-gnu --build=x86_64-pc-linux-gnu --target=arm-none-symbianelf --prefix=${{ github.workspace }}/libs/host-linux/usr --disable-shared --disable-nls --with-gmp=${{ github.workspace }}/libs/host-linux/usr
         make all
         make install
     - name: build binutils for host
       run: |
         cd libs/build
-        ${{ github.workspace }}/src/binutils-2.36.1/configure --target=arm-none-symbianelf --prefix=${{ github.workspace }}/symbian/linux --enable-poison-system-directories --with-static-standard-libraries --enable-lto --enable-gold=yes --enable-ld=yes --enable-obsolete --disable-nls --disable-libstdcxx 
+        ${{ github.workspace }}/src/binutils-2.36.1/configure --host=x86_64-pc-linux-gnu --build=x86_64-pc-linux-gnu --target=arm-none-symbianelf --prefix=${{ github.workspace }}/symbian/linux --enable-poison-system-directories --with-static-standard-libraries --enable-lto --enable-gold=yes --enable-ld=yes --enable-obsolete --disable-nls --disable-libstdcxx 
         make all
         make install
 #    - name: Upload a Build Artifact
