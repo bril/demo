@@ -44,6 +44,9 @@ jobs:
         
     - name: build gmp for host
       run: |
+        ls
+        cd src
+        ls
         cd libs/build
         ../../src/gmp-6.1.0/configure --prefix=${{ github.workspace }}/libs/host-linux/usr --disable-shared --enable-cxx
         make all
