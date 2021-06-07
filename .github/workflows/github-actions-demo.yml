@@ -88,14 +88,15 @@ jobs:
         --enable-ld=yes \
         --enable-obsolete \
         --disable-nls \
-        --disable-libstdcxx
+        --disable-libstdcxx \
+        --enable-option-checking
         
         make all
         make install
         rm -rf *
         
     - name: apt install mingw
-      run: apt-get install i686-w64-mingw32
+      run: sudo apt-get install i686-w64-mingw32
       
     - name: build gcc for win
       run: |
