@@ -11,8 +11,7 @@ jobs:
     - name: prepare directories
       run: |
         mkdir -p src
-        mkdir -p libs/build
-        ls
+        mkdir -p build
     - name: Cache downloads
       id: cache-src
       uses: actions/cache@v2.1.6
@@ -42,34 +41,94 @@ jobs:
 #      with:
 #        path: /libs
 #        key: ${{ runner.OS }}-libs-${{ env.GCC_VER }}
-        
-    - name: prepare build
-      run: |
-        pwd
-        ls
-#        mkdir -p libs/build
-        
     - name: build gmp for host
       run: |
-        cd libs/build
-        ${{ github.workspace }}/src/gmp-6.1.0/configure --host=x86_64-pc-linux-gnu --build=x86_64-pc-linux-gnu --target=x86_64-pc-linux-gnu --prefix=${{ github.workspace }}/libs/host-linux/usr --disable-shared --disable-nls --enable-cxx
+        cd build
+        ${{ github.workspace }}/src/gmp-6.1.0/configure \
+        --host=x86_64-pc-linux-gnu \
+        --build=x86_64-pc-linux-gnu \
+        --target=x86_64-pc-linux-gnu \
+        --prefix=${{ github.workspace }}/libs/host-linux \
+        --disable-shared \
+        --disable-nls \
+        --enable-cxx
+        
         make all
         make install
+        rm -rf *
+        
     - name: build mpfr for host
       run: |
-        cd libs/build
-        ${{ github.workspace }}/src/mpfr-3.1.4/configure --host=x86_64-pc-linux-gnu --build=x86_64-pc-linux-gnu --target=arm-none-symbianelf --prefix=${{ github.workspace }}/libs/host-linux/usr --disable-shared --disable-nls --with-gmp=${{ github.workspace }}/libs/host-linux/usr
+        cd build
+        ${{ github.workspace }}/src/mpfr-3.1.4/configure \
+        --host=x86_64-pc-linux-gnu \
+        --build=x86_64-pc-linux-gnu \
+        --target=arm-none-symbianelf \
+        --prefix=${{ github.workspace }}/libs/host-linux \
+        --disable-shared \
+        --disable-nls \
+        --with-gmp=${{ github.workspace }}/libs/host-linux
+        
         make all
         make install
+        rm -rf *
+        
     - name: build binutils for host
       run: |
-        cd libs/build
-        ${{ github.workspace }}/src/binutils-2.36.1/configure --host=x86_64-pc-linux-gnu --build=x86_64-pc-linux-gnu --target=arm-none-symbianelf --prefix=${{ github.workspace }}/symbian/linux --enable-poison-system-directories --with-static-standard-libraries --enable-lto --enable-gold=yes --enable-ld=yes --enable-obsolete --disable-nls --disable-libstdcxx 
+        cd build
+        ${{ github.workspace }}/src/binutils-2.36.1/configure \
+        --host=x86_64-pc-linux-gnu \
+        --build=x86_64-pc-linux-gnu \
+        --target=arm-none-symbianelf \
+        --prefix=${{ github.workspace }}/symbian/linux \
+        --enable-poison-system-directories \
+        --with-static-standard-libraries \
+        --enable-lto \
+        --enable-gold=yes \
+        --enable-ld=yes \
+        --enable-obsolete \
+        --disable-nls \
+        --disable-libstdcxx
+        
         make all
         make install
+        rm -rf *
+        
+    - name: build gcc for win
+      run: |
+        export $PATH;${{ github.workspace }}/symbian/linux/bin
+        cd ${{ github.workspace }}/src/gcc-11.1.0/
+        contrib/download_prerequisites
+        ${{ github.workspace }}/src/gcc-11.1.0/configure \
+        --host=i686-w64-mingw32 \
+        --build=x86_64-pc-linux-gnu \
+        --target=arm-none-symbianelf \
+        --prefix=${{ github.workspace }}/symbian/win \
+        --enable-threads \
+        --disable-libmudflap \
+        --disable-libssp \
+        --disable-libstdcxx-pch \
+        --enable-extra-sgxxlite-multilibs \
+        --with-gnu-as \
+        --with-gnu-ld \
+        --enable-languages=c,c++ \
+        --enable-shared \
+        --disable-lto \
+        --disable-nls \
+        --prefix=/symbian/win \
+        '--with-host-libstdcxx=-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' \
+        --disable-libgomp \
+        --enable-poison-system-directories \
+        --enable-obsolete \
+        --disable-libstdcxx \
+        --enable-option-checking 
+        
+        make all
+        make install
+        
 #    - name: Upload a Build Artifact
 #      uses: actions/upload-artifact@v2.2.3
 #        with:
-#          name: clang-win
-#          path: ${{ github.workspace }}/llvm-project/build/Release
+#          name: symbian-gcc
+#          path: ${{ github.workspace }}/symbian/win
 #          retention-days: 1
