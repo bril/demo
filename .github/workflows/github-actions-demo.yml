@@ -94,6 +94,9 @@ jobs:
         make install
         rm -rf *
         
+    - name: apt install mingw
+      run: apt-get install i686-w64-mingw32
+      
     - name: build gcc for win
       run: |
         export PATH=$PATH:${{ github.workspace }}/symbian/linux/bin
