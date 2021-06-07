@@ -16,7 +16,7 @@ jobs:
     - name: Download
       if: steps.cache-src.outputs.cache-hit != 'true'
       run: |
-        cd /src
+        mkdir -p src && cd /src
         wget --no-verbose https://gcc.gnu.org/pub/gcc/infrastructure/gmp-6.1.0.tar.bz2
         wget --no-verbose https://gcc.gnu.org/pub/gcc/infrastructure/mpfr-3.1.4.tar.bz2
         wget --no-verbose https://gcc.gnu.org/pub/gcc/infrastructure/mpc-1.0.3.tar.gz
@@ -40,7 +40,7 @@ jobs:
     - name: build libs
       if: steps.cache-libs.outputs.cache-hit != 'true'
       run: |
-        cd /libs
+        mkdir -p libs && cd /libs
         mkdir build
         cd build
         ${{ github.workspace }}/src/gmp-6.1.0/configure --host=i686-pc-linux-gnu --build=i686-pc-linux-gnu --target=i686-pc-linux-gnu --prefix=${{ github.workspace }}/libs/host-linux/usr --disable-shared --enable-cxx --disable-nls
