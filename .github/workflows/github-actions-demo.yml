@@ -39,7 +39,8 @@ jobs:
 #        key: ${{ runner.OS }}-libs-${{ env.GCC_VER }}
         
     - name: prepare build
-      run:
+      run: |
+        cd ${{ github.workspace }}
         ls
 #        mkdir -p libs/build
         
