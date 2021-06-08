@@ -1,17 +1,169 @@
 name: GitHub Actions Demo
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  linux:
     runs-on: ubuntu-latest
+    env:
+      GCC_VER: "11.1.0"
+      BINUTILS_VER: "2.36.1"
+      
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v2
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+    - name: prepare directories
+      run: |
+        mkdir -p src
+        mkdir -p build
+    - name: Cache downloads
+      id: cache-src
+      uses: actions/cache@v2.1.6
+      with:
+        path: src
+        key: ${{ runner.OS }}-src-${{ env.GCC_VER }}-${{ env.BINUTILS_VER }}
+    - name: Download
+      if: steps.cache-src.outputs.cache-hit != 'true'
+      run: |
+        cd src
+        wget --no-verbose https://gcc.gnu.org/pub/gcc/infrastructure/gmp-6.1.0.tar.bz2
+        wget --no-verbose https://gcc.gnu.org/pub/gcc/infrastructure/mpfr-3.1.4.tar.bz2
+        wget --no-verbose https://gcc.gnu.org/pub/gcc/infrastructure/mpc-1.0.3.tar.gz
+        wget --no-verbose https://gcc.gnu.org/pub/gcc/infrastructure/isl-0.18.tar.bz2
+        wget --no-verbose https://gcc.gnu.org/pub/gcc/releases/gcc-11.1.0/gcc-11.1.0.tar.xz
+        wget --no-verbose https://gcc.gnu.org/pub/binutils/releases/binutils-2.36.1.tar.xz
+        tar -xf gmp-6.1.0.tar.bz2
+        tar -xf mpfr-3.1.4.tar.bz2
+        tar -xf mpc-1.0.3.tar.gz
+        tar -xf isl-0.18.tar.bz2
+        tar -xf gcc-11.1.0.tar.xz
+        tar -xf binutils-2.36.1.tar.xz
+        
+#    - name: Cache libs
+#      id: cache-libs
+#      uses: actions/cache@v2.1.6
+#      with:
+#        path: /libs
+#        key: ${{ runner.OS }}-libs-${{ env.GCC_VER }}
+    - name: build gmp linux
+      run: |
+        cd build
+        ${{ github.workspace }}/src/gmp-6.1.0/configure \
+        --host=x86_64-pc-linux-gnu \
+        --build=x86_64-pc-linux-gnu \
+        --target=x86_64-pc-linux-gnu \
+        --prefix=${{ github.workspace }}/libs/host-linux \
+        --disable-shared \
+        --disable-nls \
+        --enable-cxx
+        
+        make all
+        make install
+        rm -rf *
+        
+    - name: build mpfr linux
+      run: |
+        cd build
+        ${{ github.workspace }}/src/mpfr-3.1.4/configure \
+        --host=x86_64-pc-linux-gnu \
+        --build=x86_64-pc-linux-gnu \
+        --target=arm-none-symbianelf \
+        --prefix=${{ github.workspace }}/libs/host-linux \
+        --disable-shared \
+        --disable-nls \
+        --with-gmp=${{ github.workspace }}/libs/host-linux
+        
+        make all
+        make install
+        rm -rf *
+        
+    - name: build binutils linux
+      run: |
+        cd build
+        ${{ github.workspace }}/src/binutils-2.36.1/configure \
+        --host=x86_64-pc-linux-gnu \
+        --build=x86_64-pc-linux-gnu \
+        --target=arm-none-symbianelf \
+        --prefix=${{ github.workspace }}/symbian/linux \
+        --enable-poison-system-directories \
+        --with-static-standard-libraries \
+        --enable-lto \
+        --enable-gold=yes \
+        --enable-ld=yes \
+        --enable-obsolete \
+        --disable-nls \
+        --disable-libstdcxx \
+        --enable-option-checking
+        
+        make all
+        make install
+        rm -rf *
+        
+    - name: apt install mingw
+      run: sudo apt-get install mingw-w64
+      
+    - name: build gcc linux
+      run: |
+        export PATH=$PATH:${{ github.workspace }}/symbian/linux/bin
+        cd ${{ github.workspace }}/src/gcc-11.1.0/
+        contrib/download_prerequisites
+        cd ../../build
+        ${{ github.workspace }}/src/gcc-11.1.0/configure \
+        --host=x86_64-pc-linux-gnu \
+        --build=x86_64-pc-linux-gnu \
+        --target=arm-none-symbianelf \
+        --prefix=${{ github.workspace }}/symbian/linux \
+        --enable-threads \
+        --disable-libmudflap \
+        --disable-libssp \
+        --disable-libstdcxx-pch \
+        --enable-extra-sgxxlite-multilibs \
+        --with-gnu-as \
+        --with-gnu-ld \
+        --enable-languages=c,c++ \
+        --enable-shared \
+        --disable-lto \
+        --disable-nls \
+        '--with-host-libstdcxx=-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' \
+        --disable-libgomp \
+        --enable-poison-system-directories \
+        --enable-obsolete \
+        --disable-libstdcxx \
+        --enable-option-checking 
+        
+        make all
+        make install
+        rm -rf *
+        
+    - name: build gcc win
+      run: |
+        export PATH=$PATH:${{ github.workspace }}/symbian/linux/bin
+        cd build
+        ${{ github.workspace }}/src/gcc-11.1.0/configure \
+        --host=i686-w64-mingw32 \
+        --build=x86_64-pc-linux-gnu \
+        --target=arm-none-symbianelf \
+        --prefix=${{ github.workspace }}/symbian/win \
+        --enable-threads \
+        --disable-libmudflap \
+        --disable-libssp \
+        --disable-libstdcxx-pch \
+        --enable-extra-sgxxlite-multilibs \
+        --with-gnu-as \
+        --with-gnu-ld \
+        --enable-languages=c,c++ \
+        --enable-shared \
+        --disable-lto \
+        --disable-nls \
+        '--with-host-libstdcxx=-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' \
+        --disable-libgomp \
+        --enable-poison-system-directories \
+        --enable-obsolete \
+        --disable-libstdcxx \
+        --enable-option-checking 
+        
+        make all
+        make install
+        
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.3
+      with:
+        name: symbian-gcc
+        path: ${{ github.workspace }}/symbian/win
+        retention-days: 1
