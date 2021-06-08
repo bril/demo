@@ -130,13 +130,12 @@ jobs:
         
         make all
         make install
+        rm -rf *
         
     - name: build gcc win
       run: |
         export PATH=$PATH:${{ github.workspace }}/symbian/linux/bin
-        cd ${{ github.workspace }}/src/gcc-11.1.0/
-        contrib/download_prerequisites
-        cd ../../build
+        cd build
         ${{ github.workspace }}/src/gcc-11.1.0/configure \
         --host=i686-w64-mingw32 \
         --build=x86_64-pc-linux-gnu \
@@ -164,9 +163,9 @@ jobs:
         make all
         make install
         
-#    - name: Upload a Build Artifact
-#      uses: actions/upload-artifact@v2.2.3
-#        with:
-#          name: symbian-gcc
-#          path: ${{ github.workspace }}/symbian/win
-#          retention-days: 1
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.3
+      with:
+        name: symbian-gcc
+        path: ${{ github.workspace }}/symbian/win
+        retention-days: 1
