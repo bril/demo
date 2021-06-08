@@ -120,7 +120,6 @@ jobs:
         --enable-shared \
         --disable-lto \
         --disable-nls \
-        --prefix=/symbian/win \
         '--with-host-libstdcxx=-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' \
         --disable-libgomp \
         --enable-poison-system-directories \
@@ -152,7 +151,6 @@ jobs:
         --enable-shared \
         --disable-lto \
         --disable-nls \
-        --prefix=/symbian/win \
         '--with-host-libstdcxx=-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' \
         --disable-libgomp \
         --enable-poison-system-directories \
