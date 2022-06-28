@@ -16,5 +16,5 @@ jobs:
         name: VS Native Tools Command Prompt.
         with:
           arch: amd64_x86
-          toolset: 16.x
+          toolset: 14.x
 
