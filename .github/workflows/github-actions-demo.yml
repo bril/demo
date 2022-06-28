@@ -8,9 +8,13 @@ jobs:
       run:
         shell: cmd
     steps:
+      - name: choco
+        run: |
+          choco install --no-progress -y visualstudio2017buildtools
+        
       - uses: ilammy/msvc-dev-cmd@v1
         name: VS Native Tools Command Prompt.
         with:
           arch: amd64_x86
-          toolset: 16.xx
+          toolset: 16.x
 
