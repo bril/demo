@@ -9,8 +9,10 @@ jobs:
         shell: cmd
     steps:
       - name: vs
-        run: |
-          "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=x86 -host_arch=x64 -vcvars_ver=14.1
+        uses: ilammy/msvc-dev-cmd@v2
+        with:
+          arch: amd64_x86
+          toolset: 14.1
 
       - name: clone
         run: |
