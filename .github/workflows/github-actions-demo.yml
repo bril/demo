@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: vs
         run: |
-          "C:\Program Files (x86)\Microsoft Visual Studio\Installer\setup.exe" modify --add Microsoft.VisualStudio.Component.VC.v141.x86.x64 --installPath "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise" --q --norestart --wait
+          "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat -arch=x86 -host_arch=x64 -vcvars_ver=14.1
 
       - name: vswhere
         run: |
