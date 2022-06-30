@@ -12,6 +12,13 @@ jobs:
         run: |
           "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=x86 -host_arch=x64 -vcvars_ver=14.1
 
-      - name: vswhere
+      - name: clone
         run: |
-          vswhere.exe -products * -latest -prerelease -property installationPath
+          git clone https://code.qt.io/qt/qt5.git qt_5_15_5
+          cd qt_5_15_5
+          git chekout v5.15.5-lts-lgpl
+          perl init-repository
+      - name: configure
+        run: |
+          cd qt_5_15_5
+          configure.bat -prefix qt5 -debug -opensource -confirm-license -nomake tests -nomake examples
