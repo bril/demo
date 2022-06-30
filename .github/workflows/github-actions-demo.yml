@@ -16,13 +16,13 @@ jobs:
 
       - name: clone
         run: |
-          git clone https://code.qt.io/qt/qt5.git qt_5_15_5
-          cd qt_5_15_5
-          git checkout v5.15.5-lts-lgpl
+          git clone https://code.qt.io/qt/qt5.git qt_5_12_10
+          cd qt_5_12_10
+          git checkout v5.12.10
           perl init-repository
       - name: configure
         run: |
-          cd qt_5_15_5
+          cd qt_5_12_10
           configure.bat -prefix qt5 -debug -opensource -confirm-license -nomake tests -nomake examples
       - name: build qtbase
         run: |
