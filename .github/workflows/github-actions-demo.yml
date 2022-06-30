@@ -16,7 +16,7 @@ jobs:
         run: |
           git clone https://code.qt.io/qt/qt5.git qt_5_15_5
           cd qt_5_15_5
-          git chekout v5.15.5-lts-lgpl
+          git checkout v5.15.5-lts-lgpl
           perl init-repository
       - name: configure
         run: |
