@@ -24,3 +24,16 @@ jobs:
         run: |
           cd qt_5_15_5
           configure.bat -prefix qt5 -debug -opensource -confirm-license -nomake tests -nomake examples
+      - name: build qtbase
+        run: |
+          nmake module-qtbase-install_targets
+      - name: free space
+        run: |
+          del /S src\*.pdb
+          del /S src\*.pch
+          del /S src\*.obj
+      - uses: actions/upload-artifact@master
+        name: Upload artifact.
+        with:
+          name: my-build
+          path: qt5\
