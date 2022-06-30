@@ -11,10 +11,7 @@ jobs:
       - name: choco
         run: |
           choco install --no-progress -y visualstudio2017buildtools
-        
-      - uses: ilammy/msvc-dev-cmd@v1
-        name: VS Native Tools Command Prompt.
-        with:
-          arch: amd64_x86
-          toolset: 14.x
 
+      - name: vswhere
+        run: |
+          vswhere.exe -products * -latest -prerelease -property installationPath
