@@ -26,9 +26,11 @@ jobs:
           configure.bat -prefix qt5 -debug -opensource -confirm-license -nomake tests -nomake examples
       - name: build qtbase
         run: |
+          cd qt_5_12_10
           nmake module-qtbase-install_subtargets
       - name: free space
         run: |
+          cd qt_5_12_10
           del /S src\*.pdb
           del /S src\*.pch
           del /S src\*.obj
