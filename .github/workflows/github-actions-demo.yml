@@ -13,24 +13,17 @@ jobs:
         with:
           arch: amd64_x86
           toolset: 14.1
-
-      - name: clone
+      - name: build
         run: |
           git clone https://code.qt.io/qt/qt5.git qt_5_12_10
           cd qt_5_12_10
           git checkout v5.12.10
           perl init-repository
-      - name: configure
-        run: |
-          cd qt_5_12_10
           configure.bat -prefix qt5 -debug -opensource -confirm-license -nomake tests -nomake examples
-      - name: build qtbase
-        run: |
-          cd qt_5_12_10
           nmake module-qtbase-install_subtargets
       - name: free space
         run: |
-          cd qt_5_12_10
+          cd qt_5_12_10\qtbase
           del /S src\*.pdb
           del /S src\*.pch
           del /S src\*.obj
